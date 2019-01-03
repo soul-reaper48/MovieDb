@@ -1,0 +1,76 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- DataSource -->
+	<!--<bean class="org.springframework.jdbc.datasource.DriverManagerDataSource" 
+		id="dataSource"> <property name="driverClassName" value="com.mysql.jdbc.Driver"></property> 
+		<property name="url" value="jdbc:mysql://172.17.0.3:3306/hibernateEmp"></property> 
+		<property name="username" value="root"></property> <property name="password" 
+		value="root"></property> </bean> -->
+	<bean
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource"
+		id="dataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+		<property name="url" value="jdbc:mysql://localhost:3306/moviedb"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value="Welcome123"></property>
+	</bean>
+
+	<!-- Hibernate SessionFactory -->
+	<!--<bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean"> 
+		<property name="dataSource" ref="dataSource"></property> <property name="hibernateProperties"> 
+		<props> <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop> 
+		<prop key="hibernate.hbm2ddl.auto">update</prop> <prop key="hibernate.format_sql">true</prop> 
+		<prop key="hibernate.show_sql">true</prop> </props> </property> <property 
+		name="packagesToScan" value="com.mindtree"></property> </bean> -->
+	<bean
+		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean"
+		id="sessionFactory">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="annotatedClasses">
+			<list>
+				<value>com.mindtree.moviedb.model.Genre</value>
+				<value>com.mindtree.moviedb.model.Actor</value>
+				<value>com.mindtree.moviedb.model.Movie</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- Transaction -->
+	<!--<bean id="transactionManager"
+		class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>-->
+	
+
+	<tx:annotation-driven
+		proxy-target-class="true" />
+	<bean
+		class="org.springframework.orm.hibernate5.HibernateTransactionManager"
+		id="transactionManager">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	<bean id="springHibernateTemplateExample"
+		class="com.mindtree.moviedb.dao.Impl.MovieDaoImpl">
+		<property name="hibernateTemplate" ref="hibernateTemplate" />
+	</bean>
+	<bean id="hibernateTemplate"
+		class="org.springframework.orm.hibernate5.HibernateTemplate">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+</beans>
